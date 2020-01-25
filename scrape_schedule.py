@@ -33,8 +33,11 @@ EXIT_OPTION_MSG = 'Exiting script'
 # gets overwritten very time branches are updated/listed
 BRANCH_LIST_FILE = 'updated_branch_list'
 
+# HTML id/classes
+NETNAME_FIELD_ID = 'userid'
+PASSWORD_FIELD_ID = 'pwd'
+
 #@TODO: add usage string
-#@TODO: search and replace (given an empty string to replace with, delete that entry)
 
 if len(sys.argv) > 1:
     new_branch_name = sys.argv[1]
@@ -74,21 +77,22 @@ chrome_options.add_argument("--no=sandbox") # required when running as root user
 
 driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=chrome_options, service_args=['--verbose', '--log-path=/tmp/chromedriver.log'])
 
-# directly go to github enterprise server integration settings page, which will first redirect to login page
-# after succesful login we should hit the 'Github Enterprise Server | Slack App Directory' page
+# directly go to student centre where most information is to be scraped from
+# after succesful login we should hit the 'Student Center' page
 #@TODO: this should be read from a property in a config file
-target_url = 'https://spaceconcordiateam.slack.com/services/B2ZGUM4MV'
+target_url = 'https://campus.concordia.ca/psp/pscsprd/EMPLOYEE/SA/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?'
+target_url_title = 'Student Center'
 
 driver.get(target_url)
 print('Page title: ', driver.title)
 
-email = ''
+netname = ''
 password = ''
 
 try:
     # get instances
-    email = driver.find_element_by_id('email')
-    password = driver.find_element_by_id('password')
+    netname = driver.find_element_by_id(NETNAME_FIELD_ID)
+    password = driver.find_element_by_id(PASSWORD_FIELD_ID)
 
 except Exception as err:
     print('Error encountered!')
@@ -96,26 +100,27 @@ except Exception as err:
     traceback.print_exc()
 
 # check config file
-if cfg.user['email'] and cfg.user['password']:
-    print('Using user config set in slackconfig.py')
-    user_email = cfg.user['email']
+if cfg.user['netname'] and cfg.user['password']:
+    print('Using user config set in userconfig.py')
+    user_netname = cfg.user['netname']
     user_password = cfg.user['password']
 
-    print('Using email:', user_email)
+    print('Using netname:', user_netname)
 
-    email.clear()
-    email.send_keys(user_email)
+    print('netname:', netname)
+    netname.clear()
+    netname.send_keys(user_netname)
     password.clear()
     password.send_keys(user_password)
     password.send_keys(Keys.RETURN)
 
 else:
     print('Config file either missing user, password, or both')
-    print('Enter email: ')
-    user_email = input()
+    print('Enter netname: ')
+    user_netname = input()
 
-    email.clear()
-    email.send_keys(user_email)
+    netname.clear()
+    netname.send_keys(user_netname)
 
     user_password = getpass.getpass('Enter password: ')
 
@@ -129,10 +134,15 @@ elem = ''
 try:
     print('Login success, on page: ', driver.title)
 
-    if 'GitHub Enterprise Server | Slack App Directory' not in driver.title:
+    if target_url_title not in driver.title:
         print('Sign in failed, closing driver...')
         driver.close()
         print('exiting script')
+        sys.exit()
+    else:
+        print('Login success! Need to add more code to actualy do stuff now...')
+        print('exiting script')
+        driver.close()
         sys.exit()
 
     '''
