@@ -12,7 +12,6 @@ import re
 # custom modules
 import userconfig as cfg
 
-# set default name if none passed in args
 new_branch_name = 'testy'
 # in case multiple branch names passed at once
 new_branch_names = []
@@ -127,7 +126,7 @@ if cfg.user['netname'] and cfg.user['password']:
 
     # wait just a bit, otherwise line below is flaky
     #@TODO: do a real fix for the netname.clear() bug
-    time.sleep(3)
+    time.sleep(3) # this line does not seem to help as it still flakes on the following line sometimes
     netname.clear()
     netname.send_keys(user_netname)
     password.clear()
@@ -232,23 +231,37 @@ try:
                     weekdays[4].add(classes[-1] + timeslot)
                     last_day_added = 4
                     print('Fr')
-        #if 'ONLINE' in line:
-        #    print('removing ONLINE class on day: ', last_day_added)
-        #    weekdays[last_day_added].pop()
 
     # remove duplicates
     classes = list(set(classes))
 
     print('classes', classes)
     print('weekdays', weekdays)
+
+    # navigate to page containing program
+    program_link_click = iframeContext + ".getElementById('DERIVED_SSS_SCL_SSS_MORE_ADVISOR$162$').click()"
+    driver.execute_script(program_link_click)
+
+    time.sleep(5)
+
+    print('Page title: ', driver.title)
+    
+    if driver.title == "My Advisors":
+        print('Sucessfuly changed to My Advisors page')
+    else:
+        print('Failed to change to My Advisors page')
+        sys.exit(0)
+
+    # add academic program
+    get_user_program = iframeContext + ".getElementById('ACAD_PROG_TBL_DESCR$0').innerText"
+    user_program = driver.execute_script(get_user_program)
+    print('program', user_program)
+    user_info['program'] = user_program
+    
     print('user_info', user_info)
 
     driver.close()
     sys.exit()
-
-    # this method doesn't seem to be working
-    #branch_list = driver.find_element_by_class_name('branches')
-    #branch_list.send_keys(', test!')
 
     # so let's try javscripting this instead
     print('inserting value: ', new_branch_name)
