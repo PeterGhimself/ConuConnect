@@ -7,6 +7,9 @@ import re
 import time
 import sys
 import traceback
+
+# custom modules
+import browser_control as bc
 import userconfig as cfg
 
 # set default name if none passed in args
@@ -36,6 +39,10 @@ BRANCH_LIST_FILE = 'updated_branch_list'
 # HTML id/classes
 NETNAME_FIELD_ID = 'userid'
 PASSWORD_FIELD_ID = 'pwd'
+EMAIL_TEXT_ID = 'DERIVED_SSS_SCL_EMAIL_ADDR'
+
+# in secondss
+PAGE_LOAD_WAIT_TIME = 5
 
 #@TODO: add usage string
 
@@ -72,8 +79,12 @@ chromedriver_path = current_dir + 'chromedriver'
 print('chromedriver_path: ', chromedriver_path)
 
 chrome_options = webdriver.ChromeOptions()
+# comment the next line to see what's actually happening
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no=sandbox") # required when running as root user. otherwise you would get no sandbox errors.
+chrome_options.add_argument('start-maximized')
+chrome_options.add_argument('disable-infobars')
+chrome_options.add_argument('--disable-extensions')
 
 driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=chrome_options, service_args=['--verbose', '--log-path=/tmp/chromedriver.log'])
 
@@ -115,6 +126,7 @@ if cfg.user['netname'] and cfg.user['password']:
     password.send_keys(Keys.RETURN)
 
 else:
+    # if credentials not on file, then have user input them
     print('Config file either missing user, password, or both')
     print('Enter netname: ')
     user_netname = input()
@@ -132,28 +144,36 @@ elem = ''
 
 # check to see if login worked
 try:
-    print('Login success, on page: ', driver.title)
+    print('Reached page: ', driver.title)
 
     if target_url_title not in driver.title:
         print('Sign in failed, closing driver...')
         driver.close()
         print('exiting script')
         sys.exit()
-    else:
-        print('Login success! Need to add more code to actualy do stuff now...')
-        print('exiting script')
-        driver.close()
-        sys.exit()
 
-    '''
-    # One way of checking the page source for matches
-    src = driver.page_source
-    text_found = re.search(r'class="branches small"', src)
-    print('text_found', text_found)
-    '''
+    print('waiting for page to load for ' + str(PAGE_LOAD_WAIT_TIME) + ' seconds')
+    time.sleep(PAGE_LOAD_WAIT_TIME)    
 
-    # append branch name to branch list
-    print('locating branches...')
+    # start scraping for stuff on the current page
+    print('locating user email address...')
+
+    # being building dictionary for user info
+    user_info = {}
+
+    iframeContext = "return document.getElementById('ptifrmtgtframe').contentWindow.document"
+
+    email = driver.execute_script(iframeContext + ".getElementById('" + EMAIL_TEXT_ID + "').innerHTML;")
+    #return iframe.contentWindow.document.getElementById('DERIVED_SSS_SCL_EMAIL_ADDR')")
+    print('email', email)
+
+    user_info['netname'] = user_netname
+    user_info['email'] = email
+    
+    print('user_info', user_info)
+
+    driver.close()
+    sys.exit()
 
     # this method doesn't seem to be working
     #branch_list = driver.find_element_by_class_name('branches')
