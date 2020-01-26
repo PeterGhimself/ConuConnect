@@ -68,6 +68,7 @@ def rankBreaks():
     ])
 
 if __name__ == "__main__":
+    cors = CORS(app)
     app.run()
 
 #     - Support filtering by the following criteria:
