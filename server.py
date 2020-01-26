@@ -7,6 +7,48 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
+theSchedule =  [
+    [
+        {
+            "course": "COMP 445",
+            "startTime": "13:15",
+            "endTime": "14:30"
+        }
+    ],
+    [
+        {
+            "course": "COMP 425",
+            "startTime": "15:30",
+            "endTime": "17:30"
+        },
+        {
+            "course": "COMP 425",
+            "startTime": "17:45",
+            "endTime": "20:15"
+        }
+    ],
+    [
+        {
+            "course": "COMP 445",
+            "startTime": "11:10",
+            "endTime": "13:00"
+        },
+        {
+            "course": "COMP 445",
+            "startTime": "13:15",
+            "endTime": "14:30"
+        }
+    ],
+    [
+        {
+            "course": "ENCS 393",
+            "startTime": "17:45",
+            "endTime": "20:15"
+        }
+    ],
+    []
+]
+
 @app.route('/login', methods = ['POST'])
 def login():
     netName = request.json.get('netName')
@@ -19,7 +61,8 @@ def login():
         "ID": 27516495,
         "email": "davidhuculak5@gmail.com",
         "name": "David Hunkulak",
-        "program": "Computer Science"
+        "program": "Computer Science",
+        "schedule": theSchedule
     })
 
 @app.route('/rank-breaks')
@@ -54,7 +97,8 @@ def rankBreaks():
                 "ID": 27516495,
                 "email": "davidhuculak5@gmail.com",
                 "name": "David Hunkulak",
-                "program": "Computer Science"
+                "program": "Computer Science",
+                "schedule": theSchedule
             },
             "rankScores": {
                 "programSimilarity": 4.5,
@@ -66,7 +110,8 @@ def rankBreaks():
                 "ID": 27516495,
                 "email": "davidhuculak5@gmail.com",
                 "name": "David Hunkulak2",
-                "program": "Computer Sciences"
+                "program": "Computer Sciences",
+                "schedule": theSchedule
             },
             "rankScores": {
                 "programSimilarity": 3,
@@ -78,7 +123,8 @@ def rankBreaks():
                 "ID": 27516495,
                 "email": "davidhuculak5@gmail.com",
                 "name": "David Hukalunk 3",
-                "program": "Mathstertisticalation"
+                "program": "Mathstertisticalation",
+                "schedule": theSchedule
             },
             "rankScores": {
                 "programSimilarity": 4.2,

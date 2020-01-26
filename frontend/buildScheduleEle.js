@@ -1,4 +1,4 @@
-const schedule = [
+const randodando = [
   [
     {
       course: "COMP 445",
@@ -45,12 +45,11 @@ const timeToFrac = time => {
   return (parseInt(timeSplit[0]) - 7) + (parseInt(timeSplit[1]) / 60);
 };
 
-(async () => {
-  const $scheduleContainer = $("#scheduleContainer");
-  const heightPx = 800;
+const loadSchedule = (schedule, $container) => {
+  const heightPx = 700;
   const heightHours = 16;
   const pxPerHour = heightPx / heightHours;
-  $scheduleContainer.html(schedule.map((dayOfWeek, dowi) => {
+  $container.html(schedule.map((dayOfWeek, dowi) => {
     let content = "";
     dayOfWeek.forEach(({ course, startTime, endTime }, i) => {
       const startTimeFrac = timeToFrac(startTime);
@@ -71,6 +70,48 @@ const timeToFrac = time => {
     });
     return `<div class="dayColumn">${content}</div>`;
   }));
-})();
+};
+
+let searchResults;
+
+const loadSearchResults = results => {
+  searchResults = results;
+  const $searchResultsContainer = $("#searchResultsContainer");
+  $searchResultsContainer.empty();
+  results.forEach(({ studentInfo, rankScores }, i) => {
+    $searchResultsContainer.append(`
+      <div class="searchResultItem ${i}" onclick="() => { showScheduleModal(${i}) }">
+        <div>${studentInfo.name}</div>
+        <div>${studentInfo.email}</div>
+        <div>${studentInfo.ID}</div>
+        <div>${studentInfo.program}</div>
+      </div>
+    `);
+    $(`.searchResultItem.${i}`).on("click", () => {
+      showScheduleModal(i)
+    });
+  });
+};
+
+const showScheduleModal = index => {
+  $("body").append(`
+    <div id="scheduleModal"
+         style="position: absolute; height: 100%; width: 100%; left: 0; top: 0; background-color: rgba(0, 0, 0, 0.3);">
+         <div style="height: 700px; 
+                     width: 500px; 
+                     margin: auto; 
+                     background-color: white; 
+                     border: 1px solid grey;
+                     display: flex;
+                     flex-grow: 1;
+                     padding: 8px;"></div>
+    </div>
+  `);
+  $("#scheduleModal").on("click", () => {
+    $('#scheduleModal').remove();
+  });
+  console.log(searchResults);
+  loadSchedule(searchResults[index].studentInfo.schedule, $("#scheduleModal > div"));
+};
 
 // $("input:radio[name ='selectedBreak']:checked").val();

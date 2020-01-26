@@ -27,7 +27,33 @@
   flex-grow: 1;
 }
 
+.runButton {
+  font-size: 24px;
+  margin-top: 8px;
+}
+
 #scheduleContainer {
   /* height: 800px; */
   display: flex;
+  flex-grow: 1;
+  padding: 8px;
+}
+
+#searchResultsContainer {
+  padding: 8px;
+  overflow-y: auto;
+  height: 400px;
+}
+
+.searchResultItem {
+  border: 1px solid #DDDDDD;
+  margin: 8px 0;
+  padding: 4px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.searchResultItem > div:first-of-type {
+  font-size: 20px;
 }

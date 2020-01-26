@@ -1,37 +1,133 @@
 <!doctype html>
 <html>
   <head>
-  <link rel="stylesheet" type="text/css" href="index.css">
   <style>
-	body {
-	  background-image: url("Concordia.jpeg");
-	  background-repeat: no-repeat;
-	  /*background-size: 1000px 1000px;*/
-	  background-position: center;
-	  min-height:500px;
-	}
-	</style>
+    html, body {
+    height: 100%;
+    }
+
+    html {
+        /* display: table;
+        margin: auto; */
+    }
+    body {
+      min-height:500px;
+      vertical-align: middle;
+    }
+    button {
+      margin:0 auto;
+      display:block;
+    }
+    .authArea, #Filters {
+      /* display: inline-block; */
+    }
+    .heyyythatsprettygood {
+      padding: 8px;
+    }
+    .brooo {
+      display: flex;
+    }
+/*    #hideCredentials {
+      display:none;
+    }*/
+  </style>
+  <link href="buildScheduleEle.css" rel="stylesheet">
     <title>ConUConnect</title>
   </head>
   <body>
-  	<!--<img src="Concordia.jpeg" alt="Concordia Building"> -->
-    <p><center><strong>ConUConnect</strong></center></p>
-    <div align="center">
-    <form id="form_login">
-  		Netname:<br>
-  		<input type="text" name="netname"><br>
-  		Password:<br>
-  		<input type="text" name="password">
-  		<p>
-            <button type="button" value="Run" onclick="switchPages()"></button>
-        </p>
-	</form>
-	</div>
-	<script>
-	  function switchPages(){
-	  	console.log("Hello world");
-	  	window.location.href = "Schedule.html";
-	  }
-	 </script>
+    <!--<img src="Concordia.jpeg" alt="Concordia Building"> -->
+    <div class="brooo">
+    <div class="heyyythatsprettygood">
+    <div class="authArea">
+      <p><center><strong style="font-size: 28px;">ConUConnect</strong style="font-size: 28px;"></center></p>
+      <div id="Credentials" align="center">
+        <form id="form_login">
+          Netname:<br>
+          <input type="text" id="netname" name="netname"><br>
+          Password:<br>
+          <input type="password" id="password" name="password">
+          <p>
+            <button type="button" value="Run" onclick="sendRequestAndHideCredentials()">Connect </button>
+          </p>
+        </form>
+      </div>
+      <p>
+        <button id="hideCredentials" type="button" value="Sign Out" onclick="hideCredentials()">Sign Out </button>
+      </p>
+    </div>
+    <div id="Filters">
+      Student IDs: <input type="text" name="studentIDs" id="studentIDs"><br>
+      Program: <input type="text" name="program" id="program"><br>
+      Subjects: <input type="text" name="subjects" id="subjects"><br>
+      Courses: <input type="text" name="courses" id="courses"><br>
+      <input type="checkbox" name="courses" value="RequireCommonCourses" id="RequireCommonCourses"> Require Common Courses<br>
+      <input type="checkbox" name="courses" value="RequireSameCourseBeforeBreak" id="RequireSameCourseBeforeBreak"> Require Same Course Before Break<br>
+      <input type="checkbox" name="courses" value="RequireSameCourseAfterBreak" id="RequireSameCourseAfterBreak"> Require Same Course After Break<br>
+      <input type="checkbox" name="courses" value="RankByProgramSimilarity" id="RankByProgramSimilarity" checked> Rank By Program Similarity<br>
+      <input type="checkbox" name="courses" value="RankByBreakOverlap" id="RankByBreakOverlap" checked> Rank By Break Over lap<br>
+      <div>
+        <button class="runButton" onclick="dataPass()">Search</button>
+      </div>
+      <!-- <div>
+        <img src="Schedule.png" alt="Concordia Schedule">
+      </div> -->
+    </div>
+    <div id="searchResultsContainer"></div>
+  </div>
+    <div id="scheduleContainer"></div>
+  </div>
+  <script>
+  function sendRequestAndHideCredentials(){
+    hideCredentials();
+    sendRequestToServer1();
+  }
+  function hideCredentials(){
+    var x = document.getElementById("Credentials");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+  function dataPass() {
+      var url = "http://localhost:5000/rank-breaks";
+      url += "?studentIDFilter="+document.getElementById("studentIDs").value;
+      url += "&programFilter="+document.getElementById("program").value;
+      url += "&subjectFilter="+document.getElementById("subjects").value;
+      url += "&courseFilter="+document.getElementById("courses").value;
+      url += "&requireCommonCourses="+document.getElementById("RequireCommonCourses").checked;
+      url += "&requireSameCourseBeforeBreak="+document.getElementById("RequireSameCourseBeforeBreak").checked;
+      url += "&requireSameCourseAfterBreak="+document.getElementById("RequireSameCourseAfterBreak").checked;
+      url += "&rankByProgramSimilarity="+document.getElementById("RankByProgramSimilarity").checked;
+      url += "&rankByBreakOverlap="+document.getElementById("RankByBreakOverlap").checked; 
+      console.log(url);
+      sendRequestToServer2(url);
+  }
+  let sendRequestToServer1 = async () => {
+    url = "http://localhost:5000/login";
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        netName: document.getElementById("netname").value,
+        password: document.getElementById("password").value
+      })
+    })
+    userInfo = await response.json()
+    loadSchedule(userInfo.schedule, $("#scheduleContainer"));
+    };
+      let sendRequestToServer2 = async (url) => {
+      // print('callerStudentID: ' + str(callerStudentID))
+      // print('selectedBreakStartTime: ' + str(selectedBreakStartTime)) // David will do
+        response = await fetch(url);
+        searchResults = await response.json();
+        // console.log(responseBody);
+        loadSearchResults(searchResults);
+      }
+   </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+   <script src="buildScheduleEle.js"></script>
   </body>
 </html>
