@@ -189,7 +189,7 @@ try:
 
     # create a list of lists for each day of the week,
     # for all classes per day
-    weekdays = [[] for i in range(5)]
+    weekdays = [set() for i in range(5)]
     classes = []
     timeslots = []
     
@@ -213,23 +213,23 @@ try:
                 timeslot = ',' + line.replace(days + ' ', '')
 
                 if 'Mo' in line:
-                    weekdays[0].append(classes[-1] + timeslot)
+                    weekdays[0].add(classes[-1] + timeslot)
                     last_day_added = 0
                     print('Mo')
                 if 'Tu' in line:
-                    weekdays[1].append(classes[-1] + timeslot)
+                    weekdays[1].add(classes[-1] + timeslot)
                     last_day_added = 1
                     print('Tu')
                 if 'We' in line:
-                    weekdays[2].append(classes[-1] + timeslot)
+                    weekdays[2].add(classes[-1] + timeslot)
                     last_day_added = 2
                     print('We')
                 if 'Th' in line:
-                    weekdays[3].append(classes[-1] + timeslot)
+                    weekdays[3].add(classes[-1] + timeslot)
                     last_day_added = 3
                     print('Th')
                 if 'Fr' in line:
-                    weekdays[4].append(classes[-1] + timeslot)
+                    weekdays[4].add(classes[-1] + timeslot)
                     last_day_added = 4
                     print('Fr')
         #if 'ONLINE' in line:
