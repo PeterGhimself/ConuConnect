@@ -47,7 +47,7 @@
           Password:<br>
           <input type="password" id="password" name="password">
           <p>
-            <button type="button" value="Run" onclick="sendRequestAndHideCredentials()">Connect </button>
+            <button type="button" value="Run" onclick="$('#loading').show();sendRequestAndHideCredentials()">Connect </button>
           </p>
         </form>
       </div>
@@ -55,7 +55,7 @@
         <button id="hideCredentials" type="button" value="Sign Out" onclick="hideCredentials()">Sign Out </button>
       </p>
     </div>
-    <div id="Filters">
+    <div style="display: none;" id="Filters">
       Student IDs: <input type="text" name="studentIDs" id="studentIDs"><br>
       Program: <input type="text" name="program" id="program"><br>
       Subjects: <input type="text" name="subjects" id="subjects"><br>
@@ -72,6 +72,7 @@
         <img src="Schedule.png" alt="Concordia Schedule">
       </div> -->
     </div>
+    <div id="loading" style="display:none;"><img src="loading.gif" alt="" />Loading!</div>
     <div id="searchResultsContainer"></div>
   </div>
     <div id="scheduleContainer"></div>
@@ -119,6 +120,9 @@
       })
     })
     userInfo = await response.json()
+    if (userInfo != null) {
+        $('#loading').hide();        
+    }
     loadSchedule(userInfo.schedule, $("#scheduleContainer"));
     callerStudentID = userInfo.ID;
     };
