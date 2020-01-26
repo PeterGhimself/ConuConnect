@@ -54,6 +54,16 @@
       <p>
         <button id="hideCredentials" type="button" value="Sign Out" onclick="$('#loading').hide();hideCredentials()">Sign Out </button>
       </p>
+      <div>
+        <button class="runButton" onclick="dataPass()">Search</button>
+      </div>
+      <!-- <div>
+        <img src="Schedule.png" alt="Concordia Schedule">
+      </div> -->
+    </div>
+    <div id="loading" style="display:none;"><img src="loading.gif" alt="" />Loading!</div>
+    <div id="searchResultsContainer"></div>
+
     </div>
     <div style="display: none;" id="Filters">
       Student IDs: <input type="text" name="studentIDs" id="studentIDs"><br>
@@ -66,16 +76,6 @@
       <input type="checkbox" name="courses" value="RankByProgramSimilarity" id="RankByProgramSimilarity" checked> Rank By Program Similarity<br>
       <input type="checkbox" name="courses" value="RankByBreakOverlap" id="RankByBreakOverlap" checked> Rank By Break Over lap<br>
   </div>
-      <div>
-        <button class="runButton" onclick="dataPass()">Search</button>
-      </div>
-      <!-- <div>
-        <img src="Schedule.png" alt="Concordia Schedule">
-      </div> -->
-    </div>
-    <div id="loading" style="display:none;"><img src="loading.gif" alt="" />Loading!</div>
-    <div id="searchResultsContainer"></div>
-
     <div id="scheduleContainer"></div>
   </div>
   <script>
