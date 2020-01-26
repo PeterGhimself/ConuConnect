@@ -4,8 +4,10 @@ import json
 from os import listdir
 from os.path import isfile, join
 
-from flask import Flask, request
+from flask import Flask, request, abort
 from flask_cors import CORS
+
+import findOverlappingFreeTime
 
 app = Flask(__name__)
 
@@ -51,6 +53,16 @@ theSchedule =  [
     []
 ]
 
+def timeStringToHourFrac(timeString):
+    [ hours, minutes ] = timeString.split(":")
+    return int(hours) + (int(minutes) / 60)
+
+def courseBlockToTuple(courseBlock):
+    return (timeStringToHourFrac(courseBlock["startTime"]), timeStringToHourFrac(courseBlock["endTime"]))
+
+def convertSchedule(schedule):
+    return list(map(lambda dayOfWeek: list(map(lambda courseBlock: courseBlockToTuple(courseBlock), dayOfWeek)), schedule))
+
 @app.route('/login', methods = ['POST'])
 def login():
     netName = request.json.get('netName')
@@ -69,8 +81,38 @@ def login():
 
 @app.route('/rank-breaks')
 def rankBreaks():
+
+    selectedBreak = request.args.get('selectedBreak')
     callerStudentID = request.args.get('callerStudentID')
-    selectedBreakStartTime = request.args.get('selectedBreakStartTime')
+
+    interval = tuple(map(lambda val: int(val), selectedBreak.split(":")))
+
+    allStudentInfo = getAllStudentInfo();
+    callerSchedule = None
+    for studentInfo in allStudentInfo:
+        if str(studentInfo["ID"]) == str(callerStudentID):
+            callerSchedule = studentInfo["schedule"]
+
+    print(callerSchedule)
+    
+    if callerSchedule is None:
+        abort(500)
+
+    otherStudentInfo = list(filter(lambda studentInfo: not (str(studentInfo["ID"]) == str(callerStudentID)), allStudentInfo))
+
+    print(otherStudentInfo)
+
+    results = []
+    for studentInfo in otherStudentInfo:
+        convertedSchedule = convertSchedule(allStudentInfo[0]["schedule"])
+        overlaps = findOverlappingFreeTime.findOverlappingFreeTime(interval, schedule)
+        if len(overlaps) > 0:
+            results.append({ "studentInfo": studentInfo })
+
+    return json.dumps(results)
+
+    
+    
     programFilter = request.args.get('programFilter')
     subjectFilter = request.args.get('subjectFilter')
     courseFilter = request.args.get('courseFilter')
@@ -149,11 +191,17 @@ def getAllStudentInfo():
 
 if __name__ == "__main__":
     # saveStudentInfo({
-    #     "ID": 97516495,
+    #     "ID": 27516495,
     #     "email": "davidhuculak5@gmail.com",
     #     "name": "David Hunkulakz",
-    #     "program": "Computer Science"
+    #     "program": "Computer Science",
+    #     "schedule": theSchedule
     # })
     # print(getAllStudentInfo())
+    allStudentInfo = getAllStudentInfo();
+    print(allStudentInfo)
+    schedule = convertSchedule(allStudentInfo[0]["schedule"])
+    print(schedule)
+    print(findOverlappingFreeTime.findOverlappingFreeTime((1, 17.5, 18), schedule))
     cors = CORS(app)
     app.run()

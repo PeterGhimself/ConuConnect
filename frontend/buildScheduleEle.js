@@ -64,7 +64,7 @@ const loadSchedule = (schedule, $container) => {
         content += `<div class="breakBlock" style="
           height: ${(timeToFrac(dayOfWeek[i + 1].startTime) - endTimeFrac) * pxPerHour}px;
         ">
-          <div><input type="radio" name="selectedBreak" value="${`${dowi} - ${startTime}`}"></div>
+          <div><input type="radio" name="selectedBreak" value="${`${dowi}:${startTime}`}"></div>
         </div>`
       }
     });

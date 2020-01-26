@@ -77,6 +77,7 @@
     <div id="scheduleContainer"></div>
   </div>
   <script>
+    let callerStudentID;
   function sendRequestAndHideCredentials(){
     hideCredentials();
     sendRequestToServer1();
@@ -100,6 +101,8 @@
       url += "&requireSameCourseAfterBreak="+document.getElementById("RequireSameCourseAfterBreak").checked;
       url += "&rankByProgramSimilarity="+document.getElementById("RankByProgramSimilarity").checked;
       url += "&rankByBreakOverlap="+document.getElementById("RankByBreakOverlap").checked; 
+      url += "&callerStudentID="+callerStudentID;
+      url += "&selectedBreak="+$("input:radio[name ='selectedBreak']:checked").val();
       console.log(url);
       sendRequestToServer2(url);
   }
@@ -117,6 +120,7 @@
     })
     userInfo = await response.json()
     loadSchedule(userInfo.schedule, $("#scheduleContainer"));
+    callerStudentID = userInfo.ID;
     };
       let sendRequestToServer2 = async (url) => {
       // print('callerStudentID: ' + str(callerStudentID))

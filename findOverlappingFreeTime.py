@@ -46,12 +46,12 @@ schedule = [
     [(6,8),(10,12),(16,17),(17,18)]
 ]
 
-print("schedule: [")
-for day in schedule:
-    print(f"  {day}")
-print("]")
-interval = 4, 7, 18
-day, starttime, endtime = interval
-print()
-print(f"find availabilities on day: {day}, between {starttime} and {endtime}")
-print(f"result: {findOverlappingFreeTime(interval, schedule)}")
+# print("schedule: [")
+# for day in schedule:
+#     print(f"  {day}")
+# print("]")
+# interval = 4, 7, 18
+# day, starttime, endtime = interval
+# print()
+# print(f"find availabilities on day: {day}, between {starttime} and {endtime}")
+# print(f"result: {findOverlappingFreeTime(interval, schedule)}")
