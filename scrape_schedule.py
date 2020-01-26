@@ -235,9 +235,6 @@ try:
     # remove duplicates
     classes = list(set(classes))
 
-    print('classes', classes)
-    print('weekdays', weekdays)
-
     # navigate to page containing program
     program_link_click = iframeContext + ".getElementById('DERIVED_SSS_SCL_SSS_MORE_ADVISOR$162$').click()"
     driver.execute_script(program_link_click)
@@ -257,11 +254,44 @@ try:
     user_program = driver.execute_script(get_user_program)
     print('program', user_program)
     user_info['program'] = user_program
-    
+
+    click_student_center = "document.getElementById('pthnavbccrefanc_HC_SSS_STUDENT_CENTER').click()"
+    # go back home so we can retrieve the id
+    driver.execute_script(click_student_center)
+    time.sleep(3)
+
+    if driver.title == "Student Center":
+        print('Sucessfuly changed to Student Center page')
+    else:
+        print('Failed to change to Student Center page')
+        sys.exit(0)
+
+    click_demographic_data = iframeContext + ".getElementById('DERIVED_SSS_SCL_SS_DEMO_SUM_LINK').click()"
+    driver.execute_script(click_demographic_data)
+    time.sleep(3)
+
+    if driver.title == "Demographic Information":
+        print('Sucessfuly changed to Demographic Information page')
+    else:
+        print('Failed to change to Demographic Information page')
+        sys.exit(0)
+
+    get_user_id = iframeContext + ".getElementById('HCR_PERSON_I_EMPLID').innerText"
+    user_id = driver.execute_script(get_user_id)
+    print('user_id:', user_id)
+
+    user_info['id'] = user_id
+
+    # print final feedback
     print('user_info', user_info)
+    print('classes', classes)
+    print('weekdays', weekdays)
 
     driver.close()
     sys.exit()
+
+    #@TODO: refactor all these time.sleeps to using polling and stop when DOM is ready
+    #@TODO: end of web scraper! Delete everything following this line after 'finished'
 
     # so let's try javscripting this instead
     print('inserting value: ', new_branch_name)
