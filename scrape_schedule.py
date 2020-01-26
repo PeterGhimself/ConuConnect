@@ -190,6 +190,9 @@ try:
     # remove duplicates
     classes = list(set(classes))
 
+    # convert back to list of lists to be more easily JSON-ified
+    weekdays = [list(x) for x in weekdays]
+
     # navigate to page containing program
     program_link_click = iframeContext + ".getElementById('" + PROGRAM_LINK_ID + "').click()"
     driver.execute_script(program_link_click)
