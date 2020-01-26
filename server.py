@@ -146,14 +146,10 @@ def rankBreaks():
 
     otherStudentInfo = list(filter(lambda studentInfo: not (str(studentInfo["ID"]) == str(callerStudentID)), allStudentInfo))
 
-    print(otherStudentInfo)
-
     results = []
     for studentInfo in otherStudentInfo:
         convertedSchedule = convertSchedule(studentInfo["schedule"])
-        print(convertedSchedule)
         overlaps = findOverlappingFreeTime.findOverlappingFreeTime(interval, convertedSchedule)
-        print(overlaps)
         if len(overlaps) > 0:
             results.append({ "studentInfo": studentInfo })
 
