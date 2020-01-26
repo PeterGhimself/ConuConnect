@@ -3,6 +3,21 @@ from flask import Flask, request
 from flask_cors import CORS
 app = Flask(__name__)
 
+@app.route('/login', methods = ['POST'])
+def login():
+    netName = request.json.get('netName')
+    password = request.json.get('password')
+
+    print('netName: ' + str(netName))
+    print('password: ' + str(password))
+
+    return json.dumps({
+        "ID": 27516495,
+        "email": "davidhuculak5@gmail.com",
+        "name": "David Hunkulak",
+        "program": "Computer Science"
+    })
+
 @app.route('/rank-breaks')
 def rankBreaks():
     callerStudentID = request.args.get('callerStudentID')
