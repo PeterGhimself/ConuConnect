@@ -31,7 +31,7 @@ def scrape_user_data(netname, password):
     USER_NAME_CLASS = 'PSLEVEL1GRIDODDROW'
 
     # in seconds
-    PAGE_LOAD_WAIT_TIME = 4
+    PAGE_LOAD_WAIT_TIME = 5
 
     # regexes
     course_code_rgx = re.compile('[A-Z]{4}\s\d{3,4}')
@@ -106,7 +106,7 @@ def scrape_user_data(netname, password):
             print('exiting script')
             sys.exit()
 
-        print('waiting for page to load for ' + str(PAGE_LOAD_WAIT_TIME) + ' seconds')
+        print('waiting for pages to load for intervals of ' + str(PAGE_LOAD_WAIT_TIME) + ' seconds')
         time.sleep(PAGE_LOAD_WAIT_TIME)
 
         # start scraping for stuff on the current page
