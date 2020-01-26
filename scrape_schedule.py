@@ -211,7 +211,7 @@ try:
     if driver.title == "Student Center":
         print('Sucessfuly changed to Student Center page')
     else:
-        print('Failed to change to Student Center page')
+        print('Failed to change to Student Center page (0)')
         sys.exit(0)
 
     click_demographic_data = iframeContext + ".getElementById('DERIVED_SSS_SCL_SS_DEMO_SUM_LINK').click()"
@@ -230,22 +230,41 @@ try:
 
     user_info['id'] = user_id
 
-    # print final feedback
-    print('user_info', user_info)
-    print('classes', classes)
-    print('weekdays', weekdays)
+    driver.execute_script(click_student_center)
+    time.sleep(PAGE_LOAD_WAIT_TIME)
 
-    driver.close()
-    sys.exit()
+    if driver.title == "Student Center":
+        print('Sucessfuly changed to Student Center page')
+    else:
+        print('Failed to change to Student Center page (1)')
+        sys.exit(0)
 
-    #@TODO: refactor all these time.sleeps to using polling and stop when DOM is ready
-    #@TODO: end of web scraper! Delete everything following this line after 'finished'
+    click_names = iframeContext + ".getElementById('DERIVED_SSS_SCL_SS_NAMES_LINK').click()"
+    driver.execute_script(click_names)
+    time.sleep(PAGE_LOAD_WAIT_TIME)
+
+    if driver.title == "Names":
+        print('Sucessfuly changed to Names page')
+    else:
+        print('Failed to change to Names page')
+        sys.exit(0)
+
+    get_user_name = iframeContext + ".getElementsByClassName('PSLEVEL1GRIDODDROW')[1].innerText"
+    user_name = driver.execute_script(get_user_name)
+    user_info['name'] = user_name
 
 except Exception as err:
     print('Error encountered!')
     print(err)
     traceback.print_exc()
 
-print('closing driver...')
-driver.close()
-print('driver closed')
+finally:
+    # print final feedback
+    print('user_info', user_info)
+    print('classes', classes)
+    print('weekdays', weekdays)
+
+    # close it up
+    print('closing driver...')
+    driver.close()
+    print('driver closed')
