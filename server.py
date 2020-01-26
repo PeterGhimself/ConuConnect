@@ -198,10 +198,10 @@ if __name__ == "__main__":
     #     "schedule": theSchedule
     # })
     # print(getAllStudentInfo())
-    allStudentInfo = getAllStudentInfo();
-    print(allStudentInfo)
-    schedule = convertSchedule(allStudentInfo[0]["schedule"])
-    print(schedule)
-    print(findOverlappingFreeTime.findOverlappingFreeTime((1, 17.5, 18), schedule))
+    # allStudentInfo = getAllStudentInfo();
+    # print(allStudentInfo)
+    # schedule = convertSchedule(allStudentInfo[0]["schedule"])
+    # print(schedule)
+    # print(findOverlappingFreeTime.findOverlappingFreeTime((1, 17.5, 18), schedule))
     cors = CORS(app)
     app.run()
