@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <style>
+	body {
+	  background-image: url("Concordia.jpeg");
+	  background-repeat: no-repeat;
+	  /*background-size: 1000px 1000px;*/
+	  background-position: center;
+	  min-height:500px;
+	}
+	</style>
+    <title>ConUConnect</title>
+  </head>
+  <body>
+  	<!--<img src="Concordia.jpeg" alt="Concordia Building"> -->
+    <p><center><strong>ConUConnect</strong></center></p>
+    <div align="center">
+    <form id="form_login">
+  		Netname:<br>
+  		<input type="text" name="netname"><br>
+  		Password:<br>
+  		<input type="text" name="password">
+  		<p>
+            <button type="button" value="Run" onclick="switchPages()"></button>
+        </p>
+	</form>
+	</div>
+	<script>
+	  function switchPages(){
+	  	console.log("Hello world");
+	  	window.location.href = "Schedule.html";
+	  }
+	 </script>
+  </body>
+</html>

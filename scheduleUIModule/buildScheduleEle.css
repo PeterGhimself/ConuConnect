@@ -1,0 +1,33 @@
+.dayColumn {
+  display: inline-block;
+  width: 20%;
+}
+
+.breakBlock {
+  display: flex;
+  align-items: center;
+}
+
+.breakBlock > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.courseBlock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.courseBlock > div {
+  flex-grow: 1;
+}
+
+#scheduleContainer {
+  /* height: 800px; */
+  display: flex;
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+  <style>
+  html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+  </style>
+  <script type="text/javascript" src="Schedule.js"></script>
+  </head>
+  <body>
+	Student ID: <input type="text" name="studentID" id="studentID"><br>
+	Program: <input type="text" name="program" id="program"><br>
+	Subjects: <input type="text" name="subjects" id="subjects"><br>
+	Courses: <input type="text" name="courses" id="courses"><br>
+	<input type="checkbox" name="courses" value="RequireCommonCourses" id="RequireCommonCourses"> Require Common Courses<br>
+	<input type="checkbox" name="courses" value="RequireSameCourseBeforeBreak" id="RequireSameCourseBeforeBreak"> Require Same Course Before Break<br>
+	<input type="checkbox" name="courses" value="RequireSameCourseAfterBreak" id="RequireSameCourseAfterBreak"> Require Same Course After Break<br>
+	<input type="checkbox" name="courses" value="RankByProgramSimilarity" id="RankByProgramSimilarity" checked> Rank By Program Similarity<br>
+	<input type="checkbox" name="courses" value="RankByBreakOverlap" id="RankByBreakOverlap" checked> Rank By Break Over lap<br>
+	<div>
+	<input type="button" value="Run" onclick="dataPass()">
+	</div>
+	<div>
+  	<img src="Schedule.png" alt="Concordia Schedule">
+  	</div>
+  	<script>
+		function dataPass() {
+  		console.log(document.getElementById("studentID").value);
+  		console.log(document.getElementById("program").value);
+  		console.log(document.getElementById("subjects").value);
+  		console.log(document.getElementById("courses").value);
+  		console.log(document.getElementById("RequireCommonCourses").checked);
+  		console.log(document.getElementById("RequireSameCourseBeforeBreak").checked);
+  		console.log(document.getElementById("RequireSameCourseAfterBreak").checked);
+  		console.log(document.getElementById("RankByProgramSimilarity").checked);
+  		console.log(document.getElementById("RankByBreakOverlap").checked);	
+	}
+	</script>
+  </body>
+</html>

@@ -1,6 +1,10 @@
 import json
+from os import listdir
+from os.path import isfile, join
+
 from flask import Flask, request
 from flask_cors import CORS
+
 app = Flask(__name__)
 
 @app.route('/login', methods = ['POST'])
@@ -8,8 +12,8 @@ def login():
     netName = request.json.get('netName')
     password = request.json.get('password')
 
-    print('netName: ' + str(netName))
-    print('password: ' + str(password))
+    print('netName: ' + str(netName),flush=True)
+    print('password: ' + str(password),flush=True)
 
     return json.dumps({
         "ID": 27516495,
@@ -83,18 +87,25 @@ def rankBreaks():
         }
     ])
 
+def saveStudentInfo(studentInfo):
+    with open('data/' + str(studentInfo["ID"]) + '.json', 'w') as f:
+        f.write(json.dumps(studentInfo))
+
+def getAllStudentInfo():
+    allfiles = [f for f in listdir('data/') if isfile(join('data/', f))]
+    fileContents = []
+    for fileName in allfiles:
+        with open('data/' + fileName) as f:
+            fileContents.append(json.loads(f.read()))
+    return fileContents
+
 if __name__ == "__main__":
+    # saveStudentInfo({
+    #     "ID": 97516495,
+    #     "email": "davidhuculak5@gmail.com",
+    #     "name": "David Hunkulakz",
+    #     "program": "Computer Science"
+    # })
+    # print(getAllStudentInfo())
     cors = CORS(app)
     app.run()
-
-#     - Support filtering by the following criteria:
-#     - Specific program(s) e.g. computer science, software eng   
-#     - Specific subject(s) e.g. COMP, ENCS, MATH
-#     - Specific course(s) e.g. COMP 248, ENGR 233
-#     - Shares common course(s)
-#     - Same course immediately before/after break
-#     - Specific person(s)
-#   - Support ranking by the following criteria:
-#     - Program similarity composite score (common courses / same program)
-#     - Break overlap percentage
-#     - Specific person(s) / friends
