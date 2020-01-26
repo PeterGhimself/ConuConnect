@@ -121,11 +121,13 @@
       })
     })
     userInfo = await response.json()
-    if (userInfo != null) {
+    if (userInfo == null) {
         $('#loading').hide();        
-    }
-    loadSchedule(userInfo.schedule, $("#scheduleContainer"));
-    callerStudentID = userInfo.ID;
+    } else {
+        loadSchedule(userInfo.schedule, $("#scheduleContainer"));
+        callerStudentID = userInfo.ID;
+        $('#loading').hide();        
+        }   
     };
       let sendRequestToServer2 = async (url) => {
       // print('callerStudentID: ' + str(callerStudentID))

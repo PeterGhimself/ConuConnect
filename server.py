@@ -4,11 +4,12 @@ import json
 from os import listdir
 from os.path import isfile, join
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 
 import findOverlappingFreeTime
 import scrapeschedule
+import time
 
 app = Flask(__name__)
 
@@ -79,48 +80,50 @@ def ampmConverter(timeStr):
 
 @app.route('/login', methods = ['POST'])
 def login():
-    netName = request.json.get('netName')
-    password = request.json.get('password')
+    try:
+        netName = request.json.get('netName')
+        password = request.json.get('password')
 
-    print('netName: ' + str(netName),flush=True)
-    # print('password: ' + str(password),flush=True)
+        print('netName: ' + str(netName),flush=True)
+        # print('password: ' + str(password),flush=True)
 
-    (user_info, weekdays) = scrapeschedule.scrape_user_data(netName, password)
+        (user_info, weekdays) = scrapeschedule.scrape_user_data(netName, password)
 
 #     {'netname': 'd_hucul', 'email': 'davidhuculak5@gmail.com', 'program': 'Bachelor of Computer Science', 'id': '27516495', 'name': 'David Huculak'}
 # [['COMP 445,1:15PM - 2:30PM'], ['COMP 425,5:45PM - 8:15PM', 'COMP 425,3:30PM - 5:30PM'], ['COMP 445,1:15PM - 2:30PM', 'COMP 445,11:10AM - 1:00PM'], ['ENCS 393,5:45PM - 8:15PM'], []]
 
-
     # print(user_info)
     # print(weekdays)
 
-    mySchedule = []
-    for weekday in weekdays:
-        newWeekday = []
-        for courseBlock in weekday:
-            [ courseCode, timeRangeStr ] = courseBlock.split(",")
-            timeRangeStr = timeRangeStr.replace(" ", "")
-            [ startTimeStr, endTimeStr ] = timeRangeStr.split("-")
-            newWeekday.append({
-                "course": courseCode,
-                "startTime": ampmConverter(startTimeStr),
-                "endTime": ampmConverter(endTimeStr)
-            })
-            newWeekday.sort(key=lambda x: timeStringToHourFrac(x["startTime"]), reverse=False)
-        mySchedule.append(newWeekday)
+        mySchedule = []
+        for weekday in weekdays:
+            newWeekday = []
+            for courseBlock in weekday:
+                [ courseCode, timeRangeStr ] = courseBlock.split(",")
+                timeRangeStr = timeRangeStr.replace(" ", "")
+                [ startTimeStr, endTimeStr ] = timeRangeStr.split("-")
+                newWeekday.append({
+                    "course": courseCode,
+                    "startTime": ampmConverter(startTimeStr),
+                    "endTime": ampmConverter(endTimeStr)
+                })
+                newWeekday.sort(key=lambda x: timeStringToHourFrac(x["startTime"]), reverse=False)
+            mySchedule.append(newWeekday)
 
     # print(json.dumps(mySchedule, indent=4, sort_keys=True))
 
-    myStudentInfo = {
-        "ID": user_info["id"],
-        "email": user_info["email"],
-        "name": user_info["name"],
-        "program": user_info["program"],
-        "schedule": mySchedule
-    }
+        myStudentInfo = {
+            "ID": user_info["id"],
+            "email": user_info["email"],
+            "name": user_info["name"],
+            "program": user_info["program"],
+            "schedule": mySchedule
+        }
 
-    saveStudentInfo(myStudentInfo)
-    return json.dumps(myStudentInfo)
+        saveStudentInfo(myStudentInfo)
+        return json.dumps(myStudentInfo)
+    except Exception as e:
+        return jsonify(None)
 
 @app.route('/rank-breaks')
 def rankBreaks():
