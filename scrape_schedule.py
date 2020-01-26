@@ -18,6 +18,13 @@ PASSWORD_FIELD_ID = 'pwd'
 EMAIL_TEXT_ID = 'DERIVED_SSS_SCL_EMAIL_ADDR'
 IFRAME_ID = 'ptifrmtgtframe'
 SCHEDULE_BOX_ID = 'STDNT_WEEK_SCHD$scroll$0'
+PROGRAM_LINK_ID = 'DERIVED_SSS_SCL_SSS_MORE_ADVISOR$162$'
+PROGRAM_TEXT_ID = 'ACAD_PROG_TBL_DESCR$0'
+STUDENT_CENTER_LINK_ID = 'pthnavbccrefanc_HC_SSS_STUDENT_CENTER'
+DEMOGRAPHIC_DATA_LINK_ID = 'DERIVED_SSS_SCL_SS_DEMO_SUM_LINK'
+ID_LINK_ID = 'HCR_PERSON_I_EMPLID'
+NAME_LINK_ID = 'DERIVED_SSS_SCL_SS_NAMES_LINK'
+USER_NAME_CLASS = 'PSLEVEL1GRIDODDROW'
 
 # in seconds
 PAGE_LOAD_WAIT_TIME = 4
@@ -184,7 +191,7 @@ try:
     classes = list(set(classes))
 
     # navigate to page containing program
-    program_link_click = iframeContext + ".getElementById('DERIVED_SSS_SCL_SSS_MORE_ADVISOR$162$').click()"
+    program_link_click = iframeContext + ".getElementById('" + PROGRAM_LINK_ID + "').click()"
     driver.execute_script(program_link_click)
 
     time.sleep(PAGE_LOAD_WAIT_TIME)
@@ -198,12 +205,12 @@ try:
         sys.exit(0)
 
     # add academic program
-    get_user_program = iframeContext + ".getElementById('ACAD_PROG_TBL_DESCR$0').innerText"
+    get_user_program = iframeContext + ".getElementById('" + PROGRAM_TEXT_ID + "').innerText"
     user_program = driver.execute_script(get_user_program)
     print('program', user_program)
     user_info['program'] = user_program
 
-    click_student_center = "document.getElementById('pthnavbccrefanc_HC_SSS_STUDENT_CENTER').click()"
+    click_student_center = "document.getElementById('" + STUDENT_CENTER_LINK_ID + "').click()"
     # go back home so we can retrieve the id
     driver.execute_script(click_student_center)
     time.sleep(PAGE_LOAD_WAIT_TIME)
@@ -214,7 +221,7 @@ try:
         print('Failed to change to Student Center page (0)')
         sys.exit(0)
 
-    click_demographic_data = iframeContext + ".getElementById('DERIVED_SSS_SCL_SS_DEMO_SUM_LINK').click()"
+    click_demographic_data = iframeContext + ".getElementById('" + DEMOGRAPHIC_DATA_LINK_ID + "').click()"
     driver.execute_script(click_demographic_data)
     time.sleep(PAGE_LOAD_WAIT_TIME)
 
@@ -224,7 +231,7 @@ try:
         print('Failed to change to Demographic Information page')
         sys.exit(0)
 
-    get_user_id = iframeContext + ".getElementById('HCR_PERSON_I_EMPLID').innerText"
+    get_user_id = iframeContext + ".getElementById('" + ID_LINK_ID + "').innerText"
     user_id = driver.execute_script(get_user_id)
     print('user_id:', user_id)
 
@@ -239,7 +246,7 @@ try:
         print('Failed to change to Student Center page (1)')
         sys.exit(0)
 
-    click_names = iframeContext + ".getElementById('DERIVED_SSS_SCL_SS_NAMES_LINK').click()"
+    click_names = iframeContext + ".getElementById('" + NAME_LINK_ID + "').click()"
     driver.execute_script(click_names)
     time.sleep(PAGE_LOAD_WAIT_TIME)
 
@@ -249,7 +256,7 @@ try:
         print('Failed to change to Names page')
         sys.exit(0)
 
-    get_user_name = iframeContext + ".getElementsByClassName('PSLEVEL1GRIDODDROW')[1].innerText"
+    get_user_name = iframeContext + ".getElementsByClassName('" + USER_NAME_CLASS +"')[1].innerText"
     user_name = driver.execute_script(get_user_name)
     user_info['name'] = user_name
 
