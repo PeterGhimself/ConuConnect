@@ -78,7 +78,15 @@
   </div>
     <div id="scheduleContainer"></div>
   </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script>
+    $("#password").on('keyup', function (e) {
+        if (e.keyCode === 13) {
+            $('#loading').show()
+            sendRequestAndHideCredentials()
+        }
+    });
+
     let callerStudentID;
   function sendRequestAndHideCredentials(){
     hideCredentials();
