@@ -10,7 +10,6 @@ import traceback
 import re
 
 # custom modules
-import browser_control as bc
 import userconfig as cfg
 
 # set default name if none passed in args
