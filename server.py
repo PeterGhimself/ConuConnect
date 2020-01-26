@@ -8,8 +8,8 @@ def login():
     netName = request.json.get('netName')
     password = request.json.get('password')
 
-    print('netName: ' + str(netName))
-    print('password: ' + str(password))
+    print('netName: ' + str(netName),flush=True)
+    print('password: ' + str(password),flush=True)
 
     return json.dumps({
         "ID": 27516495,
