@@ -40,8 +40,9 @@ BRANCH_LIST_FILE = 'updated_branch_list'
 NETNAME_FIELD_ID = 'userid'
 PASSWORD_FIELD_ID = 'pwd'
 EMAIL_TEXT_ID = 'DERIVED_SSS_SCL_EMAIL_ADDR'
-
-# in secondss
+IFRAME_ID = 'ptifrmtgtframe'
+SCHEDULE_BOX_ID = 'STDNT_WEEK_SCHD$scroll$0'
+# in seconds
 PAGE_LOAD_WAIT_TIME = 5
 
 #@TODO: add usage string
@@ -161,15 +162,30 @@ try:
     # being building dictionary for user info
     user_info = {}
 
-    iframeContext = "return document.getElementById('ptifrmtgtframe').contentWindow.document"
+    iframeContext = "return document.getElementById('" + IFRAME_ID + "').contentWindow.document"
 
     email = driver.execute_script(iframeContext + ".getElementById('" + EMAIL_TEXT_ID + "').innerHTML;")
-    #return iframe.contentWindow.document.getElementById('DERIVED_SSS_SCL_EMAIL_ADDR')")
     print('email', email)
 
     user_info['netname'] = user_netname
     user_info['email'] = email
+   
+    schedule_query = iframeContext + ".getElementById('" + SCHEDULE_BOX_ID + "').innerText"
+    schedule_query += ".split('\\n').filter((value, index, array) => {return (value != null && !value.trim() == '')});"
+
+    #print('schedule_query', schedule_query)
+
+    schedule = driver.execute_script(schedule_query)
     
+    print('schedule', schedule)
+
+    # create a list of lists for each day of the week,
+    # for all classes per day
+    weekdays = x = [[] for i in range(5)]
+
+    for line in schedule:
+            
+
     print('user_info', user_info)
 
     driver.close()
