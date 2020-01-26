@@ -7,6 +7,7 @@ import re
 import time
 import sys
 import traceback
+import re
 
 # custom modules
 import browser_control as bc
@@ -44,6 +45,10 @@ IFRAME_ID = 'ptifrmtgtframe'
 SCHEDULE_BOX_ID = 'STDNT_WEEK_SCHD$scroll$0'
 # in seconds
 PAGE_LOAD_WAIT_TIME = 5
+
+# regexes
+course_code_rgx = re.compile('[A-Z]{4}\s\d{3,4}')
+timeslot_rgx = re.compile('')
 
 #@TODO: add usage string
 
@@ -120,6 +125,10 @@ if cfg.user['netname'] and cfg.user['password']:
     print('Using netname:', user_netname)
 
     print('netname:', netname)
+
+    # wait just a bit, otherwise line below is flaky
+    #@TODO: do a real fix for the netname.clear() bug
+    time.sleep(3)
     netname.clear()
     netname.send_keys(user_netname)
     password.clear()
@@ -181,11 +190,58 @@ try:
 
     # create a list of lists for each day of the week,
     # for all classes per day
-    weekdays = x = [[] for i in range(5)]
+    weekdays = [[] for i in range(5)]
+    classes = []
+    timeslots = []
+    
+    # to keep track of which day we last added to
+    # so we can undo in case of 'ONLINE'
+    last_day_added = 0
 
     for line in schedule:
-            
+        print('processing: ', line)
+        if course_code_rgx.match(line):
+            print('found course')
+            if '-' in line:
+                classes.append(line.split('-')[0])
+                print('course added')
+            else:
+                classes.append(line)
+                print('course added')
+        if timeslot_rgx.match(line):
+            if len(classes) > 0:
+                days = re.search('[A-Za-z]{2,4}', line).group(0)
+                timeslot = ',' + line.replace(days + ' ', '')
 
+                if 'Mon' in line:
+                    weekdays[0].append(classes[-1] + timeslot)
+                    last_day_added = 0
+                    print('Mon')
+                if 'Tu' in line:
+                    weekdays[1].append(classes[-1] + timeslot)
+                    last_day_added = 1
+                    print('Tu')
+                if 'We' in line:
+                    weekdays[2].append(classes[-1] + timeslot)
+                    last_day_added = 2
+                    print('We')
+                if 'Th' in line:
+                    weekdays[3].append(classes[-1] + timeslot)
+                    last_day_added = 3
+                    print('Th')
+                if 'Fr' in line:
+                    weekdays[4].append(classes[-1] + timeslot)
+                    last_day_added = 4
+                    print('Fr')
+        #if 'ONLINE' in line:
+        #    print('removing ONLINE class on day: ', last_day_added)
+        #    weekdays[last_day_added].pop()
+
+    # remove duplicates
+    classes = list(set(classes))
+
+    print('classes', classes)
+    print('weekdays', weekdays)
     print('user_info', user_info)
 
     driver.close()
