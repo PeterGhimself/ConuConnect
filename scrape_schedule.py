@@ -212,10 +212,10 @@ try:
                 days = re.search('[A-Za-z]{2,4}', line).group(0)
                 timeslot = ',' + line.replace(days + ' ', '')
 
-                if 'Mon' in line:
+                if 'Mo' in line:
                     weekdays[0].append(classes[-1] + timeslot)
                     last_day_added = 0
-                    print('Mon')
+                    print('Mo')
                 if 'Tu' in line:
                     weekdays[1].append(classes[-1] + timeslot)
                     last_day_added = 1
