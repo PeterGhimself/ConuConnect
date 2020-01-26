@@ -8,6 +8,7 @@ from flask import Flask, request, abort
 from flask_cors import CORS
 
 import findOverlappingFreeTime
+import scrapeschedule
 
 app = Flask(__name__)
 
@@ -63,21 +64,63 @@ def courseBlockToTuple(courseBlock):
 def convertSchedule(schedule):
     return list(map(lambda dayOfWeek: list(map(lambda courseBlock: courseBlockToTuple(courseBlock), dayOfWeek)), schedule))
 
+def ampmConverter(timeStr):
+    timePortion = timeStr[:-2]
+    [ hourStr, minStr ] = timePortion.split(":")
+
+    if "AM" in timeStr.upper():
+        return f"{hourStr}:{minStr}"
+    elif "PM" in timeStr.upper():
+        if(int(hourStr) < 12):
+            return f"{int(hourStr) + 12}:{minStr}"
+        else:
+            return f"{hourStr}:{minStr}"
+
+
 @app.route('/login', methods = ['POST'])
 def login():
     netName = request.json.get('netName')
     password = request.json.get('password')
 
     print('netName: ' + str(netName),flush=True)
-    print('password: ' + str(password),flush=True)
+    # print('password: ' + str(password),flush=True)
 
-    return json.dumps({
-        "ID": 27516495,
-        "email": "davidhuculak5@gmail.com",
-        "name": "David Hunkulak",
-        "program": "Computer Science",
-        "schedule": theSchedule
-    })
+    (user_info, weekdays) = scrapeschedule.scrape_user_data(netName, password)
+
+#     {'netname': 'd_hucul', 'email': 'davidhuculak5@gmail.com', 'program': 'Bachelor of Computer Science', 'id': '27516495', 'name': 'David Huculak'}
+# [['COMP 445,1:15PM - 2:30PM'], ['COMP 425,5:45PM - 8:15PM', 'COMP 425,3:30PM - 5:30PM'], ['COMP 445,1:15PM - 2:30PM', 'COMP 445,11:10AM - 1:00PM'], ['ENCS 393,5:45PM - 8:15PM'], []]
+
+
+    # print(user_info)
+    # print(weekdays)
+
+    mySchedule = []
+    for weekday in weekdays:
+        newWeekday = []
+        for courseBlock in weekday:
+            [ courseCode, timeRangeStr ] = courseBlock.split(",")
+            timeRangeStr = timeRangeStr.replace(" ", "")
+            [ startTimeStr, endTimeStr ] = timeRangeStr.split("-")
+            newWeekday.append({
+                "course": courseCode,
+                "startTime": ampmConverter(startTimeStr),
+                "endTime": ampmConverter(endTimeStr)
+            })
+            newWeekday.sort(key=lambda x: timeStringToHourFrac(x["startTime"]), reverse=False)
+        mySchedule.append(newWeekday)
+
+    # print(json.dumps(mySchedule, indent=4, sort_keys=True))
+
+    myStudentInfo = {
+        "ID": user_info["id"],
+        "email": user_info["email"],
+        "name": user_info["name"],
+        "program": user_info["program"],
+        "schedule": mySchedule
+    }
+
+    saveStudentInfo(myStudentInfo)
+    return json.dumps(myStudentInfo)
 
 @app.route('/rank-breaks')
 def rankBreaks():
@@ -104,8 +147,10 @@ def rankBreaks():
 
     results = []
     for studentInfo in otherStudentInfo:
-        convertedSchedule = convertSchedule(allStudentInfo[0]["schedule"])
-        overlaps = findOverlappingFreeTime.findOverlappingFreeTime(interval, schedule)
+        convertedSchedule = convertSchedule(studentInfo["schedule"])
+        print(convertedSchedule)
+        overlaps = findOverlappingFreeTime.findOverlappingFreeTime(interval, convertedSchedule)
+        print(overlaps)
         if len(overlaps) > 0:
             results.append({ "studentInfo": studentInfo })
 

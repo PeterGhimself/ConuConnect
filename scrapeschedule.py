@@ -13,6 +13,9 @@ import re
 import userconfig as cfg
 
 def scrape_user_data(netname, password):
+    user_netname = netname
+    user_password = password
+
     # HTML id/classes
     NETNAME_FIELD_ID = 'userid'
     PASSWORD_FIELD_ID = 'pwd'

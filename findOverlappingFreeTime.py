@@ -11,6 +11,9 @@ def findOverlappingFreeTime(interval, schedule,
 
     day_schedule = schedule[day]
 
+    if len(day_schedule) == 0:
+        return []
+
     earliest_start = min(starttime for (starttime,_) in day_schedule)
     latest_end = max(endtime for (_,endtime) in day_schedule)
 
