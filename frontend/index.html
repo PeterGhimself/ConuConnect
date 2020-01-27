@@ -101,7 +101,7 @@
     }
   }
   function dataPass() {
-      var url = "http://localhost:5000/rank-breaks";
+      var url = "http://ec2-3-84-205-183.compute-1.amazonaws.com:5000/rank-breaks";
       url += "?studentIDFilter="+document.getElementById("studentIDs").value;
       url += "&programFilter="+document.getElementById("program").value;
       url += "&subjectFilter="+document.getElementById("subjects").value;
@@ -117,7 +117,7 @@
       sendRequestToServer2(url);
   }
   let sendRequestToServer1 = async () => {
-    url = "http://localhost:5000/login";
+    url = "http://ec2-3-84-205-183.compute-1.amazonaws.com:5000/login";
     response = await fetch(url, {
       method: "POST",
       headers: {

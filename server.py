@@ -248,4 +248,4 @@ if __name__ == "__main__":
     # print(schedule)
     # print(findOverlappingFreeTime.findOverlappingFreeTime((1, 17.5, 18), schedule))
     cors = CORS(app)
-    app.run()
+    app.run(host='0.0.0.0')
