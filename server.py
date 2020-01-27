@@ -123,6 +123,7 @@ def login():
         saveStudentInfo(myStudentInfo)
         return json.dumps(myStudentInfo)
     except Exception as e:
+        print(e)
         return jsonify(None)
 
 @app.route('/rank-breaks')
