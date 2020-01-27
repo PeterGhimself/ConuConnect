@@ -132,7 +132,9 @@ def rankBreaks():
     selectedBreak = request.args.get('selectedBreak')
     callerStudentID = request.args.get('callerStudentID')
 
-    interval = tuple(map(lambda val: int(val), selectedBreak.split(":")))
+    splitBreak = selectedBreak.split(":")
+    interval = (int(splitBreak[0]), float(splitBreak[1]), float(splitBreak[2]))
+
 
     allStudentInfo = getAllStudentInfo();
     callerSchedule = None
